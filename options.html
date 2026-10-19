@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Intent settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <style>
+    main { max-width: 820px; margin: 0 auto; padding: 48px 16px 80px; }
+    .card { margin-top: 20px; }
+    .card > h2 + .muted { margin-top: -4px; font-size: 14px; }
+    .site-row, .alt-row { display: grid; gap: 8px; align-items: end; margin-bottom: 10px; }
+    .site-row { grid-template-columns: 1fr 2fr 90px 90px auto; }
+    .alt-row { grid-template-columns: 1fr 1fr auto; }
+    .site-row label, .alt-row label, .grid label { font-size: 12px; color: var(--muted); }
+    .site-row input, .alt-row input, .grid input, .grid select { margin-top: 4px; }
+    .field { margin-top: 14px; }
+    .field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-top: 14px; }
+    .offsets { grid-template-columns: repeat(5, 1fr); }
+    textarea.tall { min-height: 140px; }
+    .save { margin-top: 20px; }
+    .save input { max-width: 260px; }
+    .ok { color: var(--accent); }
+
+    .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; }
+    .theme { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; border-radius: 16px; text-align: left; }
+    .theme[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .swatch { height: 46px; border-radius: 10px; border: 1px solid rgba(128,128,128,.3); display: flex; align-items: end; gap: 4px; padding: 6px; }
+    .swatch i { width: 14px; height: 14px; border-radius: 50%; display: block; }
+
+    .journal { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .journal td { padding: 8px 6px; border-top: 1px solid var(--line); vertical-align: top; }
+    .journal td:first-child { white-space: nowrap; color: var(--muted); }
+    .tag { font-size: 12px; border-radius: 999px; padding: 2px 8px; border: 1px solid var(--line); white-space: nowrap; }
+    .tag.unlock { border-color: var(--accent); color: var(--accent); }
+    .tag.denied { border-color: var(--warn); color: var(--warn); }
+    .sub { color: var(--muted); font-size: 13px; }
+    @media (max-width: 640px) {
+      .site-row { grid-template-columns: 1fr 1fr; }
+      .alt-row { grid-template-columns: 1fr; }
+      .offsets { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Intent</h1>
+  <p class="muted">Change these calmly, not in the middle of an urge.</p>
+
+  <section class="card">
+    <h2>Theme</h2>
+    <div id="themes" class="themes"></div>
+  </section>
+
+  <section class="card" id="prayer">
+    <h2>Prayer times</h2>
+    <p class="muted">Calculated on your laptop from your location. Nothing is sent anywhere.</p>
+    <label class="field row"><input id="pEnabled" type="checkbox"> Show prayer times on the new tab</label>
+    <div class="grid">
+      <label>Calculation method <select id="pMethod"></select></label>
+      <label>Asr <select id="pAsr">
+        <option value="standard">Standard (Shafi'i, Maliki, Hanbali)</option>
+        <option value="hanafi">Hanafi</option>
+      </select></label>
+      <label>Latitude <input id="pLat" type="number" step="0.0001"></label>
+      <label>Longitude <input id="pLng" type="number" step="0.0001"></label>
+    </div>
+    <div class="row field"><button id="pLocate" type="button">Use my location</button><span id="pLocMsg" class="muted"></span></div>
+    <p class="field label">Adjust minutes to match your local mosque</p>
+    <div class="grid offsets" id="pOffsets"></div>
+    <div class="save row"><button id="pSave" class="primary">Save prayer settings</button><span id="pSaved" class="ok"></span></div>
+  </section>
+
+  <section class="card" id="hifz">
+    <h2>Quran memorisation</h2>
+    <p class="muted">A few ayahs at a time on your new tab. Text from api.alquran.cloud, recitation by Mishary Alafasy.</p>
+    <label class="field row"><input id="hEnabled" type="checkbox"> Show on the new tab</label>
+    <div class="grid">
+      <label>Surah <select id="hSurah"><option>Loading…</option></select></label>
+      <label>Start from ayah <input id="hFrom" type="number" min="1"></label>
+      <label>Ayahs at a time <select id="hCount">
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>7</option><option>10</option>
+      </select></label>
+    </div>
+    <label class="field row"><input id="hWords" type="checkbox"> Word by word (transliteration and meaning under each word, from quran.com)</label>
+    <label class="field row"><input id="hTranslit" type="checkbox"> Show full transliteration</label>
+    <label class="field row"><input id="hTranslation" type="checkbox"> Show English translation (Sahih International)</label>
+    <div class="save row"><button id="hSave" class="primary">Save</button><span id="hSaved" class="ok"></span></div>
+    <p class="field label">Memorised so far</p>
+    <p id="hDone" class="muted"></p>
+  </section>
+
+  <section class="card">
+    <h2>Instead of scrolling</h2>
+    <p class="muted">These show when a site is blocked and on your new tab. Add a link to open it straight away.</p>
+    <div id="alts"></div>
+    <button id="addAlt" type="button">Add one</button>
+    <label class="field"><span>Daily habits checklist on the new tab (one per line)</span>
+      <textarea id="habits" class="tall"></textarea></label>
+    <div class="save row"><button id="aSave" class="primary">Save</button><span id="aSaved" class="ok"></span></div>
+  </section>
+
+  <section class="card">
+    <h2>Blocking rules</h2>
+    <div id="sites"></div>
+    <button id="addSite" type="button">Add a site</button>
+
+    <label class="field"><span>Pause before you can write a reason (seconds)</span>
+      <input id="pauseSeconds" type="number" min="5" max="300" style="max-width:120px"></label>
+    <label class="field row"><input id="hideDistractions" type="checkbox">
+      Hide the YouTube home feed, Shorts, recommendations and end screens, plus Instagram Reels and Explore, while unlocked</label>
+    <label class="field"><span>Extra not-good-enough words or phrases (one per line)</span>
+      <textarea id="extraVague"></textarea></label>
+
+    <div class="save row">
+      <input id="confirm" placeholder='Type "on purpose" to save' autocomplete="off">
+      <button id="save" class="primary">Save</button>
+      <span id="saved" class="ok"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Journal</h2>
+    <p id="summary" class="muted"></p>
+    <table class="journal"><tbody id="journal"></tbody></table>
+  </section>
+</main>
+<script type="module" src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New tab</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <!-- Amiri Quran (SIL Open Font License) is the fallback Quran font. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap">
+  <style>
+    /* Optional: KFGQPC Uthmanic Script Hafs. Its licence doesn't allow redistribution,
+       so it isn't in the repo. Put UthmanicHafs.woff2 in fonts/ to use it (see README). */
+    @font-face { font-family: "UthmanicHafs"; src: url("fonts/UthmanicHafs.woff2") format("woff2"); font-display: swap; }
+
+    main { max-width: 640px; margin: 0 auto; padding: 8vh 16px 64px; }
+    header { margin-bottom: 24px; }
+    .clock { font-family: var(--serif); font-size: clamp(56px, 12vw, 88px); line-height: 1; font-variant-numeric: tabular-nums; }
+    .card + .card { margin-top: 16px; }
+
+    .wall { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+    .wall .label { margin: 0 6px 0 0; }
+    .wall .btn { padding: 5px 12px; font-size: 14px; font-variant-numeric: tabular-nums; }
+    .wall .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .focus-shown { font-family: var(--serif); font-size: 24px; margin: 0; cursor: pointer; }
+    .habits { list-style: none; padding: 0; margin: 0; }
+    .habits label { display: flex; gap: 12px; align-items: center; padding: 8px 0; cursor: pointer; }
+    .habits input:checked + span { color: var(--muted); text-decoration: line-through; }
+    .stats { margin: 24px 0 16px; font-size: 14px; }
+
+    .prayer { padding: 18px 20px; }
+    .prayer-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; }
+    .slot { padding: 8px 2px; border-radius: 12px; }
+    .slot .n { font-size: 12px; color: var(--muted); }
+    .slot .t { font-variant-numeric: tabular-nums; font-size: 15px; }
+    .slot.sunrise .t { color: var(--muted); }
+    .slot.next { background: var(--accent-soft); outline: 1px solid var(--accent); }
+    .slot.next .n, .slot.next .t { color: var(--accent); }
+    .slot.past .t { opacity: 0.45; }
+    .prayer-next { margin: 10px 0 0; font-size: 14px; color: var(--muted); text-align: center; }
+    .prayer-next strong { color: var(--ink); font-weight: 600; }
+    .prayer-setup { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .prayer-setup p { margin: 0; }
+    @media (max-width: 520px) { .prayer-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* Memorisation card: a collapsible <details>. */
+    .hifz > summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: 12px; }
+    .hifz > summary::-webkit-details-marker { display: none; }
+    .hifz > summary h2 { margin: 0; flex: 1; }
+    .hifz > summary::after { content: "▾"; color: var(--muted); transition: transform .2s; }
+    .hifz:not([open]) > summary::after { transform: rotate(-90deg); }
+    .hifz-progress { height: 3px; background: var(--line); border-radius: 2px; margin: 12px 0 8px; overflow: hidden; }
+    .hifz-progress div { height: 100%; background: var(--accent); }
+    .ayah { padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .ayah:last-child { border-bottom: 0; }
+    .quran { font-family: "UthmanicHafs", "Amiri Quran", "Traditional Arabic", serif; }
+    .ayah-ar { direction: rtl; text-align: right; font-size: 32px; line-height: 2; transition: filter .3s; }
+    .words { direction: rtl; display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: flex-start; transition: filter .3s; }
+    .word { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .word .w-ar { font-size: 32px; line-height: 1.7; }
+    .word .w-tr { direction: ltr; font-size: 13px; color: var(--muted); }
+    .word .w-en { direction: ltr; font-size: 13px; }
+    .end-mark { font-size: 28px; color: var(--accent); align-self: center; }
+    .hidden-text .ayah-ar, .hidden-text .words { filter: blur(10px); cursor: pointer; user-select: none; }
+    .hidden-text .peek { filter: none; }
+    .ayah-line { font-size: 14px; margin-top: 10px; }
+    .ayah-line .src { display: block; font-size: 12px; color: var(--muted); }
+    .ayah-tools { display: flex; gap: 6px; margin-top: 8px; }
+    .ayah-tools button { padding: 4px 10px; font-size: 13px; }
+    .playing { color: var(--accent); border-color: var(--accent); }
+    .hifz-actions { margin-top: 14px; }
+    .hifz-actions button { font-size: 14px; padding: 8px 14px; }
+    .hifz-note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+
+    .instead { display: flex; flex-wrap: wrap; gap: 8px; }
+    .instead .btn, .instead span { font-size: 14px; padding: 7px 14px; }
+    .instead span { border: 1px dashed var(--line); border-radius: 999px; color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div id="clock" class="clock"></div>
+    <div id="date" class="muted"></div>
+    <div class="wall">
+      <span class="label">Stare at the wall:</span>
+      <a class="btn" href="still.html?m=2">2</a>
+      <a class="btn" href="still.html?m=5">5</a>
+      <a class="btn" href="still.html?m=8">8</a>
+      <a class="btn" href="still.html?m=10">10</a>
+      <a class="btn" href="still.html?m=15">15 min</a>
+    </div>
+  </header>
+
+  <section id="prayer" class="card prayer" hidden></section>
+
+  <section class="card">
+    <p class="label">What did you open your laptop for?</p>
+    <form id="focusForm"><input id="focus" autocomplete="off" placeholder="One thing. e.g. Script the intro for Friday's video"></form>
+    <p id="focusShown" class="focus-shown" title="Click to change" hidden></p>
+  </section>
+
+  <section class="card">
+    <h2>Today</h2>
+    <ul id="habitList" class="habits"></ul>
+  </section>
+
+  <details id="hifzBox" class="card hifz" hidden>
+    <summary><h2 id="hifzTitle">Memorising</h2><span id="hifzMeta" class="muted"></span></summary>
+    <div id="hifz"></div>
+  </details>
+
+  <section class="card">
+    <p class="label">Instead of scrolling</p>
+    <div id="instead" class="instead"></div>
+  </section>
+
+  <p id="stats" class="muted stats"></p>
+  <a class="btn ghost" href="options.html">Settings &amp; journal</a>
+</main>
+<script type="module" src="newtab.js"></script>
+</body>
+</html>

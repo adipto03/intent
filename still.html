@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Do nothing</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <style>
+    main { max-width: 560px; margin: 0 auto; padding: 14vh 16px 64px; text-align: center; }
+    .breath.big { width: 220px; height: 220px; margin: 0 auto 32px; }
+    #remaining { font-variant-numeric: tabular-nums; opacity: 0.5; }
+    #run p { transition: opacity 2s; }
+    body.quiet #run p, body.quiet #stop { opacity: 0; }
+  </style>
+</head>
+<body>
+<main>
+  <section id="pick">
+    <h1>Do nothing.</h1>
+    <p class="muted">No phone, no music, no tasks. Sit, breathe, and let your mind wander.
+      If you feel bored, good. That's the practice.</p>
+    <div class="row center">
+      <button data-m="2">2 min</button>
+      <button data-m="5" class="primary">5 min</button>
+      <button data-m="8">8 min</button>
+      <button data-m="10">10 min</button>
+      <button data-m="15">15 min</button>
+    </div>
+  </section>
+
+  <section id="run" hidden>
+    <div class="breath big"></div>
+    <p class="muted">Breathe in as it grows. Out as it shrinks.</p>
+    <p id="remaining"></p>
+    <button id="stop" class="ghost">Stop early</button>
+  </section>
+
+  <section id="done" hidden>
+    <h1>You sat with nothing for <span id="mins"></span>.</h1>
+    <p class="muted">How does your mind feel now compared to before?</p>
+    <div class="row center"><a class="btn primary" href="newtab.html">Back to my day</a></div>
+  </section>
+</main>
+<script type="module" src="still.js"></script>
+</body>
+</html>

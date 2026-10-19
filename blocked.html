@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paused</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="blocked.css">
+</head>
+<body>
+<main class="wrap">
+
+  <section id="home" hidden>
+    <p class="eyebrow"><span class="site-name"></span> is paused</p>
+    <h1>Notice the urge.<br>You don't have to follow it.</h1>
+    <p class="muted">Be honest with yourself: are you bored, tired, avoiding something, or do you need something specific?</p>
+    <div class="row">
+      <button id="toStill" class="primary">Sit with it for 5 minutes</button>
+      <button id="toPause">I have a specific reason</button>
+    </div>
+    <div class="instead">
+      <p class="label">Or do one of these instead</p>
+      <div id="habits" class="chips"></div>
+    </div>
+  </section>
+
+  <section id="reflect" hidden>
+    <p class="eyebrow">Session over</p>
+    <h1>Did you do what you came for?</h1>
+    <blockquote id="reflectIntent"></blockquote>
+    <div class="row">
+      <button id="stuckYes" class="primary">Yes, I stuck to it</button>
+      <button id="stuckNo">No, I drifted</button>
+    </div>
+  </section>
+
+  <section id="pause" hidden>
+    <p class="eyebrow center">Pause</p>
+    <div class="breath"></div>
+    <p id="pausePrompt" class="prompt"></p>
+    <p id="pauseCount" class="muted center count"></p>
+    <div class="row center">
+      <button id="pauseContinue" class="primary" disabled>Continue</button>
+      <button class="ghost close-tab">Never mind, close this tab</button>
+    </div>
+  </section>
+
+  <section id="form" hidden>
+    <p class="eyebrow">Unlock <span class="site-name"></span> on purpose</p>
+    <h2>What exactly will you use it for?</h2>
+    <form id="intentForm" class="stack">
+      <textarea id="intent" required
+        placeholder="e.g. Watch part 3 of the Surah Al-Kahf tafsir series and take notes, then close it"></textarea>
+      <fieldset id="cats"></fieldset>
+      <label>How long do you need?
+        <select id="minutes"></select>
+      </label>
+      <div id="appealBox" hidden>
+        <label>Make your case: why is this genuinely intentional, and what will you do straight after? (25+ words)
+          <textarea id="appeal"></textarea>
+        </label>
+      </div>
+      <div class="row">
+        <button class="primary" type="submit">Unlock</button>
+        <span id="left" class="muted"></span>
+      </div>
+    </form>
+  </section>
+
+  <section id="denied" hidden>
+    <p class="eyebrow">Staying paused</p>
+    <h2>Not this time.</h2>
+    <ul id="reasons" class="reasons"></ul>
+    <div class="row">
+      <button id="rewrite" class="primary">Rewrite my reason</button>
+      <button id="appealBtn">It's genuinely important, let me explain</button>
+      <button id="toStill2" class="ghost">Sit with it instead</button>
+    </div>
+    <div class="instead">
+      <p class="label">Better options right now</p>
+      <div id="habits2" class="chips"></div>
+    </div>
+  </section>
+
+  <section id="chosen" hidden>
+    <p class="eyebrow">Good choice</p>
+    <h1 id="chosenText"></h1>
+    <p class="muted">Close the laptop lid if you can. Come back with a reason, not an urge.</p>
+    <button class="primary close-tab">Close this tab</button>
+  </section>
+
+</main>
+<script type="module" src="blocked.js"></script>
+</body>
+</html>

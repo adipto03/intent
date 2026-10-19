@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Intent</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js"></script>
+  <style>
+    body { width: 340px; padding: 18px; }
+    h1 { font-size: 22px; margin-bottom: 12px; }
+    .site { padding: 12px 0; border-top: 1px solid var(--line); }
+    .site .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .status { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .status.open { color: var(--accent); }
+    .intent { font-size: 13px; margin: 4px 0 0; font-family: var(--serif); }
+    button, .btn { padding: 6px 12px; font-size: 13px; }
+    .stats { font-size: 13px; margin: 12px 0; border-top: 1px solid var(--line); padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Intent</h1>
+  <div id="sites"></div>
+  <p id="stats" class="muted stats"></p>
+  <div class="row">
+    <button id="still" class="primary">Sit with nothing</button>
+    <button id="options" class="ghost">Settings &amp; journal</button>
+  </div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

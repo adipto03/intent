@@ -1,0 +1,20 @@
+.wrap { max-width: 640px; margin: 0 auto; padding: 12vh 16px 64px; }
+blockquote {
+  font-family: var(--serif); font-size: 20px; margin: 16px 0 28px; padding: 4px 18px;
+  border-left: 3px solid var(--accent);
+}
+.instead { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); }
+.prompt { font-family: var(--serif); font-size: 22px; text-align: center; min-height: 2.6em; }
+.count { font-variant-numeric: tabular-nums; min-height: 1.5em; }
+
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.cat {
+  display: flex; gap: 10px; align-items: center; padding: 10px 14px; margin-top: 6px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+}
+.cat:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+label > select, label > textarea { margin-top: 6px; }
+
+.reasons { padding-left: 20px; margin: 0 0 24px; }
+.reasons li { margin-bottom: 8px; }

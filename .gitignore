@@ -1,0 +1,4 @@
+# The KFGQPC font's licence doesn't allow redistribution. Keep local copies out of the repo.
+fonts/*.woff2
+fonts/*.ttf
+*.zip
